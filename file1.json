@@ -8,17 +8,17 @@
       }
     }
    
-"Resources": {.
-"cloudTrailTrail": {.
-"Type": "AWS::CloudTrail::Trail",.
-"Properties": {.
-"S3BucketName": {.
-"Ref": "s3BucketForTrailData".
-},.
-"IsLogging": true.
-}.
-}.
-}.
+"Resources": {
+"cloudTrailTrail": {
+"Type": "AWS::CloudTrail::Trail",
+"Properties": {
+"S3BucketName": {
+"Ref": "s3BucketForTrailData"
+},
+"IsLogging": true
+}
+}
+}
 "S3Bucket2": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
@@ -41,3 +41,114 @@
       },
       "DeletionPolicy": "Delete"
     }
+
+
+
+{
+  "Role": "string",
+  "Rules": [
+    {
+      "ID": "string",
+      "Priority": integer,
+      "Prefix": "string",
+      "Filter": {
+        "Prefix": "string",
+        "Tag": {
+          "Key": "string",
+          "Value": "string"
+        },
+        "And": {
+          "Prefix": "string",
+          "Tags": [
+            {
+              "Key": "string",
+              "Value": "string"
+            }
+            ...
+          ]
+        }
+      },
+      "Status": "Enabled"|"Disabled",
+      "SourceSelectionCriteria": {
+        "SseKmsEncryptedObjects": {
+          "Status": "Enabled"|"Disabled"
+        },
+        "ReplicaModifications": {
+          "Status": "Enabled"|"Disabled"
+        }
+      },
+      "ExistingObjectReplication": {
+        "Status": "Enabled"|"Disabled"
+      },
+      "Destination": {
+        "Bucket": "string",
+        "Account": "string",
+        "StorageClass": "STANDARD"|"REDUCED_REDUNDANCY"|"STANDARD_IA"|"ONEZONE_IA"|"INTELLIGENT_TIERING"|"GLACIER"|"DEEP_ARCHIVE"|"OUTPOSTS",
+        "AccessControlTranslation": {
+          "Owner": "Destination"
+        },
+        "EncryptionConfiguration": {
+          "ReplicaKmsKeyID": "string"
+        },
+        "ReplicationTime": {
+          "Status": "Enabled"|"Disabled",
+          "Time": {
+            "Minutes": integer
+          }
+        },
+        "Metrics": {
+          "Status": "Enabled"|"Disabled",
+          "EventThreshold": {
+            "Minutes": integer
+          }
+        }
+      },
+      "DeleteMarkerReplication": {
+        "Status": "Enabled"|"Disabled"
+      }
+    }
+   
+  ]
+}
+
+
+{
+  "Version": "2012-10-17",
+  "Id": "CreditApplications",
+  "Statement": [{
+      "Sid": "AllowCreditAppProcessing",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::1234:role/credit-processor-prod"
+        ]
+      },
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:PutObjectACL
+      ],
+      "Resource": [
+        "arn:aws:s3:::credit-applications",
+        "arn:aws:s3:::credit-applications/*",
+      ]
+    },{
+        "Sid": "DenyEveryoneElse",
+        "Effect": "Deny",
+        "Principal": "*",
+        "Action": "s3:*",
+        "Resource": [
+          "arn:aws:s3:::credit-applications",
+          "arn:aws:s3:::credit-applications/*",
+        ],
+        "Condition": {
+          "ArnNotEquals": {
+            "aws:PrincipalArn": [
+              "arn:aws:iam::1234:role/credit-processor-prod"
+            ]
+        }
+      }
+    }
+  ]
+}
+
