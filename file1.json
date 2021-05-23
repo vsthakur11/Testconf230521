@@ -1,0 +1,43 @@
+"RecordServiceS3Bucket": {
+      "Type": "AWS::S3::Bucket",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "VersioningConfiguration": {
+          "Status": "Enabled"
+        }
+      }
+    }
+   
+"Resources": {.
+"cloudTrailTrail": {.
+"Type": "AWS::CloudTrail::Trail",.
+"Properties": {.
+"S3BucketName": {.
+"Ref": "s3BucketForTrailData".
+},.
+"IsLogging": true.
+}.
+}.
+}.
+"S3Bucket2": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "AccessControl": "Private"
+      }
+    }
+ "EncryptedS3Bucket2": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": {
+          "Fn::Sub": "encryptedbucket-${AWS::Region}-${AWS::AccountId}"
+        },
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [{
+            "ServerSideEncryptionByDefault": {
+              "SSEAlgorithm": "AES256"
+            }
+          }]
+        }
+      },
+      "DeletionPolicy": "Delete"
+    }
